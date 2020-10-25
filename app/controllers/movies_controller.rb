@@ -13,7 +13,11 @@ class MoviesController < ApplicationController
     else
       @ratings_to_show = []
     end
-    @movies = Movie.with_ratings(@ratings_to_show)
+    if params[:sort]
+      @movies = Movie.with_ratings(@ratings_to_show).order(params[:sort])
+    else
+      @movies = Movie.with_ratings(@ratings_to_show)
+    end    
   end
 
   def new
