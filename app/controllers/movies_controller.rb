@@ -8,13 +8,11 @@ class MoviesController < ApplicationController
 
   def index
     @all_ratings = Movie.all_ratings
-    @redirect_mark = false
     if params[:ratings]
       @ratings_to_show = params[:ratings].keys
       session[:ratings] = params[:ratings]
     elsif session[:ratings]
       @ratings_to_show = session[:ratings].keys
-      @redirect_mark = true
     else
       @ratings_to_show = @all_ratings
     end
@@ -23,13 +21,11 @@ class MoviesController < ApplicationController
       session[:sort] = params[:sort]
     elsif session[:sort]
       @movies = Movie.with_ratings(@ratings_to_show).order(session[:sort])
-      @redirect_mark = true
     else
       @movies = Movie.with_ratings(@ratings_to_show)
     end
-
-    if @redirect_mark
-      redirect_to movies_path(ratings: params[:ratings], sort: params[:sort])
+    if params[:ratings] != session[:ratings] or params[:sort] != session[:sort]
+      redirect_to movies_path ratings: session[:ratings], sort: session[:sort] 
     end
   end
 
